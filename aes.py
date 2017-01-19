@@ -58,7 +58,6 @@ class AESCipher(object):
         raw = pad_bytes(raw)
         iv = make_iv()
         cipher = AES.new(self.key, AES.MODE_CBC, iv)
-        print('encrypt_bytes', len(cipher), type(cipher), len(iv), type(iv))
         return iv + cipher.encrypt(raw)
 
     def decrypt_bytes(self, enc: bytes) -> bytes:

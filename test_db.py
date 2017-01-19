@@ -1,24 +1,24 @@
 import unittest
 from pim import *
 from db import *
+import os
 
 
 class TestPIM(unittest.TestCase):
-    # def setUp(self):
-    #     pass
-
     @staticmethod
     def _get_test_password():
         return 'kLF9AW8IA0H5WiLcoByZF9H3Yl7FXtBU'
 
-    def test_db(self):
+    def test_db_one_note(self):
+        os.unlink('test_db.data')
         db = DataBase('test_db.data', self._get_test_password)
 
         n1 = db.append(PermanentRecord(Note("Note title 1", "Note text 1\nNote text 1")))
         self.assertIsInstance(n1, uuid.UUID)
-        print(db[n1])
+        # print(db[n1])
 
-    def disabled_test_db(self):
+    def test_db(self):
+        os.unlink('test_db.data')
         db = DataBase('test_db.data', self._get_test_password)
 
         n1 = db.append(PermanentRecord(Note("Note title 1", "Note text 1\nNote text 1")))
@@ -30,17 +30,32 @@ class TestPIM(unittest.TestCase):
         t3 = db.append(PermanentRecord(Task("Task 3")))
         t4 = db.append(PermanentRecord(Task("Task 4")))
 
-        print(n1, n2, n3)
-        print(t1, t2, t3, t4)
-
         self.assertIsInstance(n1, uuid.UUID)
         self.assertIsInstance(n2, uuid.UUID)
         self.assertIsInstance(n3, uuid.UUID)
+
         self.assertIsInstance(t1, uuid.UUID)
         self.assertIsInstance(t2, uuid.UUID)
         self.assertIsInstance(t3, uuid.UUID)
         self.assertIsInstance(t4, uuid.UUID)
-        self.assertEqual(db[t1], Task("Task 1"))
+
+        self.assertIsInstance(db[n1], Note)
+        self.assertIsInstance(db[n2], Note)
+        self.assertIsInstance(db[n3], Note)
+
+        self.assertIsInstance(db[t1], Task)
+        self.assertIsInstance(db[t2], Task)
+        self.assertIsInstance(db[t3], Task)
+        self.assertIsInstance(db[t4], Task)
+
+        self.assertEqual(db[n1].title, "Note title 1")
+        self.assertEqual(db[n2].title, "Note title 2")
+        self.assertEqual(db[n3].title, "Note title 3")
+
+        self.assertEqual(db[t1].title, Task("Task 1").title)
+        self.assertEqual(db[t2].title, Task("Task 2").title)
+        self.assertEqual(db[t3].title, Task("Task 3").title)
+        self.assertEqual(db[t4].title, Task("Task 4").title)
 
         n1 = db.append(EncryptedRecord(Note("E Note title 1", "Note text 1\nNote text 1"), self._get_test_password))
         n2 = db.append(EncryptedRecord(Note("E Note title 2", "Note text 2\nNote text 2"), self._get_test_password))
@@ -51,16 +66,32 @@ class TestPIM(unittest.TestCase):
         t3 = db.append(EncryptedRecord(Task("E Task 3"), self._get_test_password))
         t4 = db.append(EncryptedRecord(Task("E Task 4"), self._get_test_password))
 
-        print(n1, n2, n3)
-        print(t1, t2, t3, t4)
-
         self.assertIsInstance(n1, uuid.UUID)
         self.assertIsInstance(n2, uuid.UUID)
         self.assertIsInstance(n3, uuid.UUID)
+
         self.assertIsInstance(t1, uuid.UUID)
         self.assertIsInstance(t2, uuid.UUID)
         self.assertIsInstance(t3, uuid.UUID)
         self.assertIsInstance(t4, uuid.UUID)
+
+        self.assertIsInstance(db[n1], Note)
+        self.assertIsInstance(db[n2], Note)
+        self.assertIsInstance(db[n3], Note)
+
+        self.assertIsInstance(db[t1], Task)
+        self.assertIsInstance(db[t2], Task)
+        self.assertIsInstance(db[t3], Task)
+        self.assertIsInstance(db[t4], Task)
+
+        self.assertEqual(db[n1].title, "E Note title 1")
+        self.assertEqual(db[n2].title, "E Note title 2")
+        self.assertEqual(db[n3].title, "E Note title 3")
+
+        self.assertEqual(db[t1].title, Task("E Task 1").title)
+        self.assertEqual(db[t2].title, Task("E Task 2").title)
+        self.assertEqual(db[t3].title, Task("E Task 3").title)
+        self.assertEqual(db[t4].title, Task("E Task 4").title)
 
 
 if __name__ == '__main__':
