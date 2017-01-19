@@ -315,7 +315,6 @@ class DataBase(object):
                 df.write(ruid.bytes)
                 df.write(size.to_bytes(4, byteorder='big'))
                 df.write(int.to_bytes(PermanentRecord.enc_sig, 1, byteorder='big'))
-                print("Save permanent record", len(ruid.bytes), size.to_bytes(4, byteorder='big'), int.to_bytes(PermanentRecord.enc_sig, 1, byteorder='big'))
                 offset = df.tell()
                 df.write(data)
             self.index[ruid] = DataBase.IndexRecord(ruid, size, offset, PermanentRecord.enc_sig)
