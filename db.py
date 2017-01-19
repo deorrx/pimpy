@@ -297,32 +297,33 @@ class DataBase(object):
 
         # TODO change dicts if adding DeleteMark or RevertMark
 
-        key = make_uuid()
+        ruid = make_uuid()
         if isinstance(value, EncryptedRecord):
             data = value.to_bytes()
             size = len(data)
             with open(self.file_name, 'ab') as df:
-                df.write(key.bytes)
+                df.write(ruid.bytes)
                 df.write(size.to_bytes(4, byteorder='big'))
                 df.write(int.to_bytes(EncryptedRecord.enc_sig, 1, byteorder='big'))
                 offset = df.tell()
                 df.write(data)
-            self.index[key] = DataBase.IndexRecord(key, size, offset, 1)
+            self.index[ruid] = DataBase.IndexRecord(ruid, size, offset, EncryptedRecord.enc_sig)
         elif isinstance(value, PermanentRecord):
             data = value.to_bytes()
             size = len(data)
             with open(self.file_name, 'ab') as df:
-                df.write(key.bytes)
+                df.write(ruid.bytes)
                 df.write(size.to_bytes(4, byteorder='big'))
                 df.write(int.to_bytes(PermanentRecord.enc_sig, 1, byteorder='big'))
+                print("Save permanent record", len(ruid.bytes), size.to_bytes(4, byteorder='big'), int.to_bytes(PermanentRecord.enc_sig, 1, byteorder='big'))
                 offset = df.tell()
                 df.write(data)
-            self.index[key] = DataBase.IndexRecord(key, size, offset, 1)
+            self.index[ruid] = DataBase.IndexRecord(ruid, size, offset, PermanentRecord.enc_sig)
         elif isinstance(value, TemporaryRecord):
-            self.index[key] = value.record
+            self.index[ruid] = value.record
         else:
             raise ValueError('only PermanentRecord or TemporaryRecord can be appended')
-        return key
+        return ruid
 
     def get_versions(self, ruid: uuid.UUID) -> Dict[uuid.UUID, Tuple]:
         return self.versions[ruid]

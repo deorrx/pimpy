@@ -19,7 +19,7 @@ except ImportError:
     def make_iv():
         return urandom(AES.block_size)
 
-BS = 16
+BS = AES.block_size
 
 
 def pad(s):
@@ -50,20 +50,21 @@ class AESCipher(object):
 
     def decrypt(self, enc):
         enc = base64.b64decode(enc)
-        iv = enc[:16]
+        iv = enc[:AES.block_size]
         cipher = AES.new(self.key, AES.MODE_CBC, iv)
-        return unpad(cipher.decrypt(enc[16:])).decode("utf-8")
+        return unpad(cipher.decrypt(enc[AES.block_size:])).decode("utf-8")
 
     def encrypt_bytes(self, raw: bytes) -> bytes:
         raw = pad_bytes(raw)
         iv = make_iv()
         cipher = AES.new(self.key, AES.MODE_CBC, iv)
+        print('encrypt_bytes', len(cipher), type(cipher), len(iv), type(iv))
         return iv + cipher.encrypt(raw)
 
     def decrypt_bytes(self, enc: bytes) -> bytes:
-        iv = enc[:16]
+        iv = enc[:AES.block_size]
         cipher = AES.new(self.key, AES.MODE_CBC, iv)
-        return unpad_bytes(cipher.decrypt(enc[16:]))
+        return unpad_bytes(cipher.decrypt(enc[AES.block_size:]))
 
 
 if __name__ == '__main__':
