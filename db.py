@@ -194,11 +194,11 @@ class DataBase(object):
     def __init__(self, file_name: str=None, password_getter=None):
         self.file_name = file_name      # type: str
         self.password_getter = password_getter
-        self.index = {}                 # type: Dict[uuid.UUID, Tuple[int, int]]
+        self.index = {}                 # type: Dict[uuid.UUID, Union[Tuple[int, int], Record]]
         self.versions = {}              # type: Dict[uuid.UUID, Dict[uuid.UUID, Tuple[uuid.UUID]]]
         self.parents = {}               # type: Dict[uuid.UUID, Dict[uuid.UUID, List[uuid.UUID]]]
 
-        self.marks = {}                 # type: Dict[uuid.UUID, Any[None, DeleteMark, RevertMark]]
+        self.marks = {}                 # type: Dict[uuid.UUID, Union[None, DeleteMark, RevertMark]]
         self.who_delete = {}            # type: Dict[uuid.UUID, uuid.UUID]
         self.who_revert = {}            # type: Dict[uuid.UUID, uuid.UUID]
 
@@ -286,6 +286,8 @@ class DataBase(object):
                                      (str(type(record.enc_domain)), str(record.enc_domain)))
         elif isinstance(record, TemporaryRecord):
             return record.record
+        else:
+            return record
 
     def append(self, value: Record) -> uuid.UUID:
         """
