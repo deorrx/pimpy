@@ -284,8 +284,6 @@ class DataBase(object):
                 else:
                     raise ValueError('Wrong enc_domain %s %s' %
                                      (str(type(record.enc_domain)), str(record.enc_domain)))
-        elif isinstance(record, TemporaryRecord):
-            return record.record
         else:
             return record
 
@@ -296,8 +294,6 @@ class DataBase(object):
         :param value:
         :return:
         """
-
-        # TODO change dicts if adding DeleteMark or RevertMark
 
         ruid = make_uuid()
         if isinstance(value, EncryptedRecord):
@@ -325,7 +321,7 @@ class DataBase(object):
         else:
             raise ValueError('only PermanentRecord or TemporaryRecord can be appended')
 
-
+        # TODO change dicts if adding DeleteMark or RevertMark
 
         return ruid
 
