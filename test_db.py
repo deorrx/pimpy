@@ -48,14 +48,22 @@ class TestPIM(unittest.TestCase):
         self.assertIsInstance(db[t3], Task)
         self.assertIsInstance(db[t4], Task)
 
-        self.assertEqual(db[n1].title, "Note title 1")
-        self.assertEqual(db[n2].title, "Note title 2")
-        self.assertEqual(db[n3].title, "Note title 3")
+        def assert_note_title(r: Record, title: str):
+            assert isinstance(r, Note)
+            self.assertEqual(r.title, title)
 
-        self.assertEqual(db[t1].title, Task("Task 1").title)
-        self.assertEqual(db[t2].title, Task("Task 2").title)
-        self.assertEqual(db[t3].title, Task("Task 3").title)
-        self.assertEqual(db[t4].title, Task("Task 4").title)
+        def assert_task_title(r: Record, title: str):
+            assert isinstance(r, Task)
+            self.assertEqual(r.title, title)
+
+        assert_note_title(db[n1], "Note title 1")
+        assert_note_title(db[n2], "Note title 2")
+        assert_note_title(db[n3], "Note title 3")
+
+        assert_task_title(db[t1], Task("Task 1").title)
+        assert_task_title(db[t2], Task("Task 2").title)
+        assert_task_title(db[t3], Task("Task 3").title)
+        assert_task_title(db[t4], Task("Task 4").title)
 
         n1 = db.append(EncryptedRecord(Note("E Note title 1", "Note text 1\nNote text 1"), self._get_test_password))
         n2 = db.append(EncryptedRecord(Note("E Note title 2", "Note text 2\nNote text 2"), self._get_test_password))
@@ -84,14 +92,14 @@ class TestPIM(unittest.TestCase):
         self.assertIsInstance(db[t3], Task)
         self.assertIsInstance(db[t4], Task)
 
-        self.assertEqual(db[n1].title, "E Note title 1")
-        self.assertEqual(db[n2].title, "E Note title 2")
-        self.assertEqual(db[n3].title, "E Note title 3")
+        assert_note_title(db[n1], "E Note title 1")
+        assert_note_title(db[n2], "E Note title 2")
+        assert_note_title(db[n3], "E Note title 3")
 
-        self.assertEqual(db[t1].title, Task("E Task 1").title)
-        self.assertEqual(db[t2].title, Task("E Task 2").title)
-        self.assertEqual(db[t3].title, Task("E Task 3").title)
-        self.assertEqual(db[t4].title, Task("E Task 4").title)
+        assert_task_title(db[t1], Task("E Task 1").title)
+        assert_task_title(db[t2], Task("E Task 2").title)
+        assert_task_title(db[t3], Task("E Task 3").title)
+        assert_task_title(db[t4], Task("E Task 4").title)
 
 
 if __name__ == '__main__':
