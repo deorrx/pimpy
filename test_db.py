@@ -142,15 +142,16 @@ class TestPIM(unittest.TestCase):
         assert_task_title(db[t4], Task("E Task 4").title)
 
         # Now test temporary records
+        db2 = DataBase('test_db.data', self._get_test_password)
 
-        n1 = db.append(TemporaryRecord(Note("Note title 1", "Note text 1\nNote text 1")))
-        n2 = db.append(TemporaryRecord(Note("Note title 2", "Note text 2\nNote text 2")))
-        n3 = db.append(TemporaryRecord(Note("Note title 3", "Note text 3\nNote text 3")))
+        n1 = db2.append(TemporaryRecord(Note("Note title 1", "Note text 1\nNote text 1")))
+        n2 = db2.append(TemporaryRecord(Note("Note title 2", "Note text 2\nNote text 2")))
+        n3 = db2.append(TemporaryRecord(Note("Note title 3", "Note text 3\nNote text 3")))
 
-        t1 = db.append(TemporaryRecord(Task("Task 1")))
-        t2 = db.append(TemporaryRecord(Task("Task 2")))
-        t3 = db.append(TemporaryRecord(Task("Task 3")))
-        t4 = db.append(TemporaryRecord(Task("Task 4")))
+        t1 = db2.append(TemporaryRecord(Task("Task 1")))
+        t2 = db2.append(TemporaryRecord(Task("Task 2")))
+        t3 = db2.append(TemporaryRecord(Task("Task 3")))
+        t4 = db2.append(TemporaryRecord(Task("Task 4")))
 
         self.assertIsInstance(n1, uuid.UUID)
         self.assertIsInstance(n2, uuid.UUID)

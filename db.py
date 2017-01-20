@@ -324,6 +324,9 @@ class DataBase(object):
             self.index[ruid] = value.record
         else:
             raise ValueError('only PermanentRecord or TemporaryRecord can be appended')
+
+
+
         return ruid
 
     def get_versions(self, ruid: uuid.UUID) -> Dict[uuid.UUID, Tuple]:
