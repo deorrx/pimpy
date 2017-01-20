@@ -321,7 +321,35 @@ class DataBase(object):
         else:
             raise ValueError('only PermanentRecord or TemporaryRecord can be appended')
 
-        # TODO change dicts if adding DeleteMark or RevertMark
+        if isinstance(value, VersionedRecord):
+            vuid = value.uuid
+            parents = value.parents
+            if vuid in self.versions:
+                self.versions[vuid][ruid] = parents
+            else:
+                self.versions[vuid] = {ruid: parents}
+
+        if isinstance(value, DeleteMark):
+            self.marks[ruid] = value
+            self.who_delete[value.uid] = ruid
+        elif isinstance(value, RevertMark):
+            self.marks[ruid] = value
+            self.who_revert[value.uid] = ruid
+        else:
+            self.marks[ruid] = None
+
+        if isinstance(value, DeleteMark):
+            if value.uid in self.actual:
+                self.actual[value.uid] = False
+            else:
+                raise ValueError('adding DeleteMark but its uid not in actual dict')
+        elif isinstance(value, RevertMark):
+            if value.uid in self.actual:
+                self.actual[value.uid] = True
+            else:
+                raise ValueError('adding RevertMark but its uid not in actual dict')
+        else:
+            self.actual[ruid] = True
 
         return ruid
 
