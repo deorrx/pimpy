@@ -30,4 +30,12 @@ for i in range(0,100):
 for i in range(0,100):
     lb2.insert("end", "item #%s" % i)
 
+def on_resize(event):
+    if event.widget.__class__ == tk.Tk:
+        print('resize', event.widget.__class__, event.width, event.height)
+
+root.bind("<Configure>", on_resize)
+
+
+
 root.mainloop()
